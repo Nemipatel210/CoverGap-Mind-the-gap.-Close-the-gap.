@@ -1,0 +1,10 @@
+node_modules/
+dist/
+__pycache__/
+.pytest_cache/
+*.pyc
+backend/data/active/
+backend/data/staging/
+backend/data/state/
+backend/data/.active*
+.env
