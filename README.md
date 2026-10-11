@@ -1,4 +1,4 @@
-# Sevaro Tele-Neurology Operations Command Center
+# CoverGap: Mind the gap. Close the gap.
 
 Rutgers Health Hack · Sevaro Challenge 2 · Team 07 prototype.
 
