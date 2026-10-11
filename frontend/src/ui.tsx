@@ -117,7 +117,7 @@ export function Button({ children, onClick, variant = 'primary', busy, disabled,
   busy?: boolean; disabled?: boolean; size?: 'sm' | 'md' | 'lg'; className?: string; type?: 'button' | 'submit'; title?: string
 }) {
   const v = {
-    primary: 'bg-navy text-white hover:bg-navy-700 border-navy',
+    primary: 'bg-teal text-white hover:bg-teal-600 border-teal',
     secondary: 'bg-white text-ink border-line hover:border-ink-faint',
     ghost: 'bg-transparent text-teal-600 border-transparent hover:bg-teal-50',
     danger: 'bg-white text-bad border-bad/40 hover:bg-bad-50',

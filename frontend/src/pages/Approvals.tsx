@@ -26,7 +26,7 @@ export default function Approvals() {
     <div className="mx-auto max-w-4xl">
       <h1 className="text-2xl font-semibold tracking-tight text-navy">Waiting for your decision</h1>
       <p className="mt-1 text-sm text-ink-soft">Approve or reject in one step. Nothing reaches an off-duty doctor without your approval.</p>
-      {!isLead && <p className="mt-3 rounded-lg border border-warn/30 bg-warn-50 p-3 text-sm text-warn">You're viewing as the coordinator. Switch to "Clinical lead" at the top to decide.</p>}
+      {!isLead && <p className="mt-3 rounded-lg border border-warn/30 bg-warn-50 p-3 text-sm text-warn">You're signed in as the coordinator. Sign in as the clinical lead to decide.</p>}
 
       <div className="mt-5 space-y-3">
         {pending.length === 0 && esc.length === 0 && <Empty>Nothing waiting for you right now.</Empty>}

@@ -88,7 +88,7 @@ export default function DataManagement() {
               <span className="font-medium">Act on this first now: </span>{res.top_problem.what} ({res.top_problem.where.hospital}). {res.top_problem.fix}.
             </div>
           )}
-          <Link to="/" className="mt-4 inline-flex rounded-lg bg-navy px-4 py-2 text-sm font-medium text-white hover:bg-navy-700">See what to do now</Link>
+          <Link to="/" className="mt-4 inline-flex rounded-lg bg-teal px-4 py-2 text-sm font-medium text-white hover:bg-teal-600">See what to do now</Link>
         </section>
       )}
 

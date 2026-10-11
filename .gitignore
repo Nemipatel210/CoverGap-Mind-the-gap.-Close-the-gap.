@@ -1,9 +1,9 @@
 node_modules/
 dist/
-backend/venv/
 __pycache__/
 .pytest_cache/
 *.pyc
+backend/venv/
 backend/data/active/
 backend/data/staging/
 backend/data/state/

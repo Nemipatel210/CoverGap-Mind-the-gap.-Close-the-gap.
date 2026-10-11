@@ -12,7 +12,17 @@ export class ApiFailure extends Error {
   }
 }
 
+/** Demo sign-in token. sessionStorage keeps each browser tab signed in separately, so one tab can be the
+ * coordinator and another the clinical lead during a demo. */
+const KEY = 'sevaro.token'
+export const tokenStore = {
+  get: (): string | null => { try { return sessionStorage.getItem(KEY) } catch { return null } },
+  set: (t: string | null) => { try { if (t) sessionStorage.setItem(KEY, t); else sessionStorage.removeItem(KEY) } catch { /* storage blocked */ } },
+}
+const authHeaders = (): Record<string, string> => { const t = tokenStore.get(); return t ? { Authorization: `Bearer ${t}` } : {} }
+
 async function handle(r: Response) {
+  if (r.status === 401 && !r.url.endsWith('/api/auth/login')) window.dispatchEvent(new Event('sevaro:signed-out'))
   const text = await r.text()
   let body: Any = null
   try { body = text ? JSON.parse(text) : null } catch { body = text }
@@ -24,13 +34,19 @@ async function handle(r: Response) {
 }
 
 export const api = {
-  get: (path: string) => fetch(BASE + path).then(handle),
+  get: (path: string) => fetch(BASE + path, { headers: authHeaders() }).then(handle),
   post: (path: string, data?: unknown) =>
-    fetch(BASE + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data ?? {}) }).then(handle),
+    fetch(BASE + path, { method: 'POST', headers: { 'Content-Type': 'application/json', ...authHeaders() }, body: JSON.stringify(data ?? {}) }).then(handle),
   put: (path: string, data?: unknown) =>
-    fetch(BASE + path, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data ?? {}) }).then(handle),
-  del: (path: string) => fetch(BASE + path, { method: 'DELETE' }).then(handle),
-  upload: (path: string, form: FormData) => fetch(BASE + path, { method: 'POST', body: form }).then(handle),
+    fetch(BASE + path, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...authHeaders() }, body: JSON.stringify(data ?? {}) }).then(handle),
+  del: (path: string) => fetch(BASE + path, { method: 'DELETE', headers: authHeaders() }).then(handle),
+  upload: (path: string, form: FormData) => fetch(BASE + path, { method: 'POST', body: form, headers: authHeaders() }).then(handle),
+  /** For plain links (downloads): fetch with the token and save the result. */
+  download: async (path: string, filename: string) => {
+    const r = await fetch(BASE + path, { headers: authHeaders() })
+    const url = URL.createObjectURL(await r.blob())
+    const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url)
+  },
   url: (path: string) => BASE + path,
 }
 

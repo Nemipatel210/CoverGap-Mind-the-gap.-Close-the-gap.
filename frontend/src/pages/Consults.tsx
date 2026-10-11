@@ -3,11 +3,11 @@ import { type Any, t, tSec } from '../api'
 import { Badge, ErrorNote, Loading, PageHeader, Panel, Select, sevTone, usePoll } from '../ui'
 
 const STAGE_COLOR: Record<string, string> = {
-  Received: '#D9DFE7', Triaged: '#C3CCD8', Assigned: '#93A3B8', 'Provider Contacted': '#6B7F99',
-  'CT/CTA or Imaging Pending': '#D99A3D', 'Imaging Review': '#EBC27E', 'Video Consult In Progress': '#13294B',
-  'Note Pending': '#B9CFE6', Documentation: '#7FA6CC',
+  Received: '#D9DFE7', Triaged: '#C3CCD8', Assigned: '#94A3B8', 'Provider Contacted': '#5B6B7F',
+  'CT/CTA or Imaging Pending': '#D99A3D', 'Imaging Review': '#EBC27E', 'Video Consult In Progress': '#123D56',
+  'Note Pending': '#C9E7EA', Documentation: '#5FB3BC',
 }
-const ACT_COLOR: Record<string, string> = { call: '#2A7477', video: '#13294B', camera: '#A86A12' }
+const ACT_COLOR: Record<string, string> = { call: '#087E8B', video: '#123D56', camera: '#A86A12' }
 
 function TimerBar({ tm }: { tm: Any }) {
   const max = tm.critical * 1.25

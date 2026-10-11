@@ -4,7 +4,7 @@ Rutgers Health Hack · Sevaro Challenge 2 · Team 07 prototype.
 
 The command center sits on top of Sevaro's existing live view. It **detects** coverage risk from the event stream, **decides** on the right intervention and explains it, and **acts** through a clinical-lead approval step. After acting it closes the loop by updating projected coverage.
 
-> Hackathon prototype. All data is synthetic. Not a clinical decision-support system, not HIPAA-compliant, and it has no authentication (a role switcher stands in for it). Don't expose the dev servers publicly.
+> Hackathon prototype. All data is synthetic. Not a clinical decision-support system, not HIPAA-compliant, and its sign-in is demo-only (fixed passwords, local session file). Don't expose the dev servers publicly.
 
 ## Run it
 
@@ -22,9 +22,28 @@ npm install
 npm run dev            # add `-- --host` to open the physician app from a phone on the same Wi-Fi
 ```
 
-Open http://localhost:5173. The physician phone view is at http://localhost:5173/m.
+Open http://localhost:5173 and sign in.
 
-Tests: `cd backend && python -m pytest -q` (26 tests, including replay against the reference snapshot and the full offer loop).
+### Demo logins
+
+Every login is prefilled. Pick the role and press **Sign in**.
+
+| Who | Where | Username | Password |
+|---|---|---|---|
+| Operations coordinator | http://localhost:5173/login | `coordinator` | `demo1234` |
+| Clinical lead on duty | http://localhost:5173/login | `lead` | `demo1234` |
+| Off-duty doctor | **http://localhost:5173/m** (open on your phone) | `okafor` (prefilled; any off-duty doctor's surname works) | `demo1234` |
+
+Each browser tab keeps its own sign-in, so you can have the coordinator in one tab and the clinical lead in another. The API enforces the roles:
+- only the coordinator can propose, reassign, escalate or load data;
+- only the clinical lead can approve or reject;
+- a doctor sees and answers only their own offers.
+
+**Phone:** run the frontend with `npm run dev -- --host`, then open the "Network" address it prints plus `/m` (for example `http://192.168.1.20:5173/m`) on a phone on the same Wi-Fi. If the venue network blocks this, use your phone's hotspot for both devices.
+
+API testing account: `admin` / `admin-demo`, which has every permission; change it with `SEVARO_ADMIN_PASSWORD`. These are demo credentials only.
+
+Tests: `cd backend && python -m pytest -q` (28 tests, including replay against the reference snapshot and the full offer loop).
 
 ## Screens
 
@@ -37,7 +56,7 @@ Tests: `cd backend && python -m pytest -q` (26 tests, including replay against t
 | Coordinator | **Doctors & consults** | Reference: what each doctor is doing (from signals) and where each consult is, against its time limit. |
 | Both | **Record of actions** | Who was considered, who was excluded and why, who approved, what happened. |
 | Clinical lead | **Your decisions** | Offers and escalations to approve or reject in one step, plus stroke care at risk. |
-| Off-duty doctor | **Phone view** (`/m`) | Hospitals, hours, start time, why them. Accept or decline. |
+| Off-duty doctor | **Phone view** at `/m` (own login) | Hospitals, hours, start time, why them. Accept or decline. |
 
 Settings (gear icon) holds the coordinator's preferences and the projection assumptions. The safety rules are fixed.
 
@@ -45,8 +64,8 @@ Settings (gear icon) holds the coordinator's preferences and the projection assu
 
 1. **What to do now.** The top card answers the handbook's four questions for the stranded Oak Valley stroke (CON-2105): routing failed 3×, nobody approved there is free, and Dr. Okafor is the one off-duty doctor who passes every rule.
 2. Click **Call in Dr. Grace Okafor**. The decision screen shows the recommendation, everyone considered with the rule each one fails, and how routing is limited so the new doctor isn't swamped. Click **Send to clinical lead for approval**.
-3. Switch the role to **Clinical lead**. On **Your decisions**, click **Approve and send**.
-4. Open the **phone view** for Dr. Okafor and tap **Accept**.
+3. In a second tab, sign in as the **Clinical lead**. On **Your decisions**, click **Approve and send**.
+4. On your phone, open `/m`, press **Sign in** (Dr. Okafor is prefilled) and tap **Accept**.
 5. Back as coordinator: the Oak Valley patient now reads "Dr. Grace Okafor joins at 18:40". Suncrest is still one short, and nobody else qualifies, so it's escalated rather than a rule being bent. Check **Record of actions** for the full trail.
 6. **Live test.** Go to **Add new events** and drop the judges' file, or `sample_live_events.csv` to rehearse. You'll see the clock move, new and worsened problems, and the new top action. In the sample, a repeat call about CON-2105 moves it up without restarting its clock, and Dr. Kim finishing a video changes the top fix to "Assign to Dr. Daniel Kim".
 

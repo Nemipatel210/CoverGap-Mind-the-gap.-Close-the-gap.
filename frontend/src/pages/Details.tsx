@@ -12,7 +12,7 @@ export default function Details() {
       <div role="tablist" className="my-5 inline-flex rounded-lg border border-line bg-white p-1">
         {(['doctors', 'consults'] as const).map((k) => (
           <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)}
-            className={`rounded-md px-4 py-1.5 text-sm font-medium ${tab === k ? 'bg-navy text-white' : 'text-ink-soft hover:text-ink'}`}>
+            className={`rounded-md px-4 py-1.5 text-sm font-medium ${tab === k ? 'bg-teal text-white' : 'text-ink-soft hover:text-ink'}`}>
             {k === 'doctors' ? 'Doctors' : 'Consults'}
           </button>
         ))}

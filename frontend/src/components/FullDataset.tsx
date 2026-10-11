@@ -163,7 +163,7 @@ export default function FullDataset() {
                   <span>{t.label}</span>
                   <span className="flex items-center gap-2">
                     <span className="num text-ink-soft">{t.active_rows || '—'}</span>
-                    <a href={api.url(`/api/datasets/sample/${t.type}`)} title={`Download demo ${t.label} as a template`} className="text-teal-600"><Download className="h-3.5 w-3.5" /></a>
+                    <button onClick={() => api.download(`/api/datasets/sample/${t.type}`, `${t.type}.csv`)} aria-label={`Download demo ${t.label} as a template`} title={`Download demo ${t.label} as a template`} className="text-teal-600"><Download className="h-3.5 w-3.5" /></button>
                   </span>
                 </li>
               ))}

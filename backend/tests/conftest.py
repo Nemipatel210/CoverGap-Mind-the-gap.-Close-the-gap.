@@ -18,7 +18,15 @@ def client(tmp_path, monkeypatch):
     import main  # noqa: F401
     from fastapi.testclient import TestClient
     with TestClient(importlib.import_module("main").app) as c:
+        tok = c.post("/api/auth/login", json={"username": "admin", "password": "admin-demo"}).json()["token"]
+        c.headers["Authorization"] = f"Bearer {tok}"
         yield c
+
+
+def login_as(client, username):
+    r = client.post("/api/auth/login", json={"username": username, "password": "demo1234"})
+    assert r.status_code == 200, r.text
+    return {"Authorization": f"Bearer {r.json()['token']}"}
 
 
 def demo_csv(name: str) -> bytes:

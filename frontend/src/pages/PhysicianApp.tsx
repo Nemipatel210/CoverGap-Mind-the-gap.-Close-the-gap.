@@ -1,35 +1,76 @@
-import { useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { CalendarCheck, CheckCircle2, ChevronLeft, Clock, Hospital, XCircle } from 'lucide-react'
+import { useEffect, useState, type FormEvent } from 'react'
+import { CalendarCheck, CheckCircle2, Clock, Hospital, LogOut, Stethoscope, XCircle } from 'lucide-react'
 import { api, type Any, t } from '../api'
-import { Button, Loading, statusLabel, statusTone, Badge, useAction, usePoll } from '../ui'
+import { useAuth } from '../App'
+import { Button, statusLabel, statusTone, Badge, useAction, usePoll } from '../ui'
 import { Countdown } from './Offers'
 
-/** Off-shift physician's phone view: see an offer, accept or decline. Nothing else. */
+/** Off-duty doctor's phone view at /m: sign in (prefilled for the demo), then see an offer and accept or decline. */
 export default function PhysicianApp() {
-  const { physicianId } = useParams()
-  const meta = usePoll<Any>('/api/meta', 15000)
-  if (!physicianId) {
-    return (
-      <Phone>
-        <h1 className="text-xl font-semibold text-navy">Who's signing in?</h1>
-        <p className="mt-1 text-sm text-ink-soft">Demo sign-in. Pick an off-shift physician to see their offers.</p>
-        {!meta.data ? <Loading /> : (
-          <ul className="mt-4 space-y-2">
-            {meta.data.off_shift.map((p: Any) => (
-              <li key={p.physician_id}>
-                <Link to={`/m/${p.physician_id}`} className="flex items-center justify-between rounded-xl border border-line bg-white px-4 py-3.5 text-base font-medium hover:border-teal">
-                  {p.name}<span className="text-xs text-ink-faint">{p.physician_id}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-        <Link to="/" className="mt-6 block text-center text-sm text-teal-600">Back to the command center</Link>
-      </Phone>
-    )
+  const { user } = useAuth()
+  if (user?.role === 'doctor' && user.physician_id) return <Inbox pid={user.physician_id} name={user.name} />
+  return <DoctorLogin staffSignedIn={!!user} />
+}
+
+function DoctorLogin({ staffSignedIn }: { staffSignedIn: boolean }) {
+  const { signIn, signOut } = useAuth()
+  const [accounts, setAccounts] = useState<Any>(null)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+  useEffect(() => {
+    api.get('/api/auth/accounts').then((a: Any) => {
+      setAccounts(a)
+      setUsername((u) => u || a.default_doctor || '')
+      setPassword((p) => p || a.password)
+    }).catch((e) => setErr((e as Error).message))
+  }, [])
+  const submit = async (e: FormEvent) => {
+    e.preventDefault()
+    setBusy(true); setErr(null)
+    try {
+      if (staffSignedIn) await signOut()
+      await signIn(username, password)
+    } catch (ex) {
+      setErr((ex as Error).message)
+    } finally {
+      setBusy(false)
+    }
   }
-  return <Inbox pid={physicianId} name={meta.data?.off_shift.find((p: Any) => p.physician_id === physicianId)?.name ?? meta.data?.on_shift.find((p: Any) => p.physician_id === physicianId)?.name} />
+  const who = accounts?.doctors?.find((d: Any) => d.username === username)
+  return (
+    <div className="flex min-h-full flex-col bg-navy">
+      <div className="px-6 pb-8 pt-10 text-white">
+        <Stethoscope className="h-8 w-8 text-teal-100" />
+        <p className="mt-4 text-2xl font-semibold">Sevaro shift offers</p>
+        <p className="mt-1 text-sm text-white/70">Sign in to see extra-shift requests and reply in two taps.</p>
+      </div>
+      <form onSubmit={submit} className="mx-auto w-full max-w-md flex-1 rounded-t-3xl bg-canvas px-6 pb-10 pt-7">
+        {who && <p className="text-sm text-ink-soft">Signing in as <span className="font-semibold text-navy">{who.name}</span></p>}
+        <label className="mt-4 block text-sm font-medium" htmlFor="du">Username</label>
+        <input id="du" value={username} onChange={(e) => setUsername(e.target.value)} autoCapitalize="none" autoComplete="username"
+          className="mt-1 w-full rounded-xl border border-line bg-white px-4 py-3.5 text-base" />
+        <label className="mt-3 block text-sm font-medium" htmlFor="dp">Password</label>
+        <input id="dp" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password"
+          className="mt-1 w-full rounded-xl border border-line bg-white px-4 py-3.5 text-base" />
+        {err && <p className="mt-3 text-sm text-bad" role="alert">{err}</p>}
+        <Button type="submit" size="lg" busy={busy} disabled={!username || !password} className="mt-6 w-full">Sign in</Button>
+        {accounts?.doctors?.length > 1 && (
+          <details className="mt-6 text-sm">
+            <summary className="cursor-pointer text-teal-600">Demo: sign in as a different doctor</summary>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {accounts.doctors.map((d: Any) => (
+                <button type="button" key={d.username} onClick={() => setUsername(d.username)}
+                  className={`rounded-lg border px-3 py-2 text-left text-sm ${d.username === username ? 'border-teal bg-teal-50 text-navy' : 'border-line bg-white'}`}>{d.name}</button>
+              ))}
+            </div>
+          </details>
+        )}
+        <p className="mt-8 text-center text-xs text-ink-faint">Demo sign-in · synthetic data · offers never include patient information</p>
+      </form>
+    </div>
+  )
 }
 
 function Phone({ children }: { children: React.ReactNode }) {
@@ -41,8 +82,8 @@ function Phone({ children }: { children: React.ReactNode }) {
 }
 
 function Inbox({ pid, name }: { pid: string; name?: string }) {
-  const nav = useNavigate()
-  const { data } = usePoll<Any>(`/api/offers?physician_id=${pid}`, 3000)
+  const { signOut } = useAuth()
+  const { data } = usePoll<Any>('/api/offers', 3000)
   const { run, busy } = useAction()
   const [done, setDone] = useState<Any>(null)
   const offers: Any[] = data?.offers ?? []
@@ -51,7 +92,7 @@ function Inbox({ pid, name }: { pid: string; name?: string }) {
   const past = offers.filter((o) => !['sent', 'accepted', 'proposed', 'rejected'].includes(o.status))
 
   const respond = async (o: Any, action: 'accept' | 'decline') => {
-    const r = await run(o.id + action, () => api.post(`/api/offers/${o.id}/respond`, { physician_id: pid, action }))
+    const r = await run(o.id + action, () => api.post(`/api/offers/${o.id}/respond`, { action }))
     if (r) setDone(r)
   }
 
@@ -77,13 +118,13 @@ function Inbox({ pid, name }: { pid: string; name?: string }) {
   return (
     <Phone>
       <div className="mb-5 flex items-center gap-2">
-        <button aria-label="Switch physician" onClick={() => nav('/m')} className="rounded-lg p-1 hover:bg-white"><ChevronLeft className="h-5 w-5 text-navy" /></button>
-        <div>
+        <div className="flex-1">
           <p className="text-xs text-ink-soft">Sevaro shift offers</p>
           <h1 className="text-lg font-semibold text-navy">{name ?? pid}</h1>
         </div>
+        <button onClick={() => signOut()} className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm text-ink-soft hover:bg-white"><LogOut className="h-4 w-4" />Sign out</button>
       </div>
-      {!data && <Loading />}
+      {!data && <p className="py-8 text-center text-sm text-ink-soft">Loading your offers…</p>}
       {data && open.length === 0 && (
         <div className="rounded-2xl border border-line bg-white p-6 text-center">
           <Clock className="mx-auto h-8 w-8 text-ink-faint" />

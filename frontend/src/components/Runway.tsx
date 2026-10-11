@@ -35,7 +35,7 @@ export function Runway({ coverage, physicians, onlyAttention, onPick, selected }
           {rows.map((r: Any) => (
             <tr key={r.hospital_id} onClick={() => onPick?.(r.hospital_id)}
               className={`${onPick ? 'cursor-pointer' : ''} ${selected === r.hospital_id ? 'bg-teal-50' : 'hover:bg-canvas'}`}>
-              <td className="sticky left-0 z-10 border-t border-line bg-inherit px-3 py-1.5" style={{ background: selected === r.hospital_id ? '#E8F3F3' : 'white' }}>
+              <td className="sticky left-0 z-10 border-t border-line bg-inherit px-3 py-1.5" style={{ background: selected === r.hospital_id ? '#E7F4F5' : 'white' }}>
                 <div className="font-medium leading-tight">{r.hospital_name}</div>
                 <div className="text-[11px] text-ink-faint">{r.hospital_id} · tier {r.tier}</div>
               </td>

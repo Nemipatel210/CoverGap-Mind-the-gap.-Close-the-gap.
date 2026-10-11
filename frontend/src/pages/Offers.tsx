@@ -48,7 +48,7 @@ export default function Offers() {
               </ol>
               {o.status === 'sent' && (
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <a className="inline-flex items-center gap-1 rounded-lg border border-line px-2.5 py-1 text-xs font-medium text-teal-600 hover:bg-teal-50" href={`/m/${o.physician_id}`} target="_blank" rel="noreferrer"><Smartphone className="h-3.5 w-3.5" />Open {o.physician_name}'s phone view</a>
+                  <span className="inline-flex items-center gap-1 text-xs text-ink-soft"><Smartphone className="h-3.5 w-3.5" />Waiting for {o.physician_name} to reply on their phone</span>
                   <Button size="sm" variant="secondary" busy={busy === o.id} onClick={() => run(o.id, () => api.post(`/api/offers/${o.id}/expire`, { actor: `${actor} (demo)` }), 'Offer timed out; next eligible physician proposed if any')}>Simulate 10-minute timeout</Button>
                 </div>
               )}

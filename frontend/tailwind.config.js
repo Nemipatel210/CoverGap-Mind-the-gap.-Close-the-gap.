@@ -5,11 +5,12 @@ export default {
     extend: {
       fontFamily: { sans: ['"Public Sans"', 'system-ui', 'sans-serif'] },
       colors: {
-        navy: { DEFAULT: '#13294B', 700: '#1C3863', 600: '#28497A', 100: '#E6ECF5' },
-        canvas: '#F4F6F9',
-        line: '#DCE2EA',
-        ink: { DEFAULT: '#1B2636', soft: '#56657A', faint: '#8593A6' },
-        teal: { DEFAULT: '#2A7477', 600: '#23605F', 50: '#E8F3F3', 100: '#CFE6E6' },
+        // Sevaro palette: deep navy for brand and headings, teal for actions, light blue-gray workspace, slate text.
+        navy: { DEFAULT: '#123D56', 700: '#0E3146', 600: '#1C5170', 100: '#E3EDF3' },
+        canvas: '#F3F7F9',
+        line: '#DCE5EB',
+        ink: { DEFAULT: '#334155', soft: '#5B6B7F', faint: '#94A3B8' },
+        teal: { DEFAULT: '#087E8B', 600: '#066B76', 700: '#055A63', 50: '#E7F4F5', 100: '#C9E7EA' },
         ok: { DEFAULT: '#2F7D4F', 50: '#E9F5EE' },
         warn: { DEFAULT: '#A86A12', 50: '#FBF2E2' },
         bad: { DEFAULT: '#B83232', 50: '#FBEBEB' },
