@@ -1,0 +1,8 @@
+event_id,event_time,ingested_at,consult_id,event_type,physician_id,hospital_id,description
+EVT-02001,2026-03-17T18:22:00-04:00,2026-03-17T18:22:02-04:00,CON-2119,consult_received,,SYN-005,Stroke consult request received
+EVT-02002,2026-03-17T18:23:10-04:00,2026-03-17T18:23:12-04:00,CON-2119,consult_triaged,,SYN-005,Consult triaged
+EVT-02003,2026-03-17T18:23:15-04:00,2026-03-17T18:23:17-04:00,CON-2119,routing_attempt_failed,,SYN-005,No available credentialed provider; retry scheduled
+EVT-02004,2026-03-17T18:24:00-04:00,2026-03-17T18:24:03-04:00,CON-2105,consult_received,,SYN-010,Stroke consult request received
+EVT-02005,2026-03-17T18:21:30-04:00,2026-03-17T18:26:00-04:00,CON-2101,video_ended,PHY-002,SYN-008,Video consult completed
+EVT-02005,2026-03-17T18:21:30-04:00,2026-03-17T18:26:00-04:00,CON-2101,video_ended,PHY-002,SYN-008,Video consult completed
+EVT-02006,2026-03-17T18:21:33-04:00,2026-03-17T18:21:35-04:00,,camera_inactive,PHY-002,SYN-008,Desktop agent: camera inactive

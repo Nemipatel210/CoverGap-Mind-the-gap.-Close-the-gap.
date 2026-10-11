@@ -1,0 +1,11 @@
+node_modules/
+dist/
+backend/venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+backend/data/active/
+backend/data/staging/
+backend/data/state/
+backend/data/.active*
+.env
