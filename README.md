@@ -6,6 +6,8 @@ The command center sits on top of Sevaro's existing live view. It **detects** co
 
 > Hackathon prototype. All data is synthetic. Not a clinical decision-support system, not HIPAA-compliant, and its sign-in is demo-only (fixed passwords, local session file). Don't expose the dev servers publicly.
 
+> <img width="3200" height="1800" alt="CoverGap-flowchart-logos (2)" src="https://github.com/user-attachments/assets/8894e7c8-0cb7-4ca7-b316-916f2861c78f" />
+
 ## Run it
 
 You need Python 3.10+ and Node 18+.
