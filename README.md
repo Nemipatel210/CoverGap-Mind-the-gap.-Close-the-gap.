@@ -1,6 +1,6 @@
 # CoverGap: Mind the gap. Close the gap.
 
-Rutgers Health Hack · Sevaro Challenge 2 · Team 07 prototype.
+Recognized with a Special Shout-Out at Rutgers Health Hack · Sevaro Challenge · Team 07.
 
 The command center sits on top of Sevaro's existing live view. It **detects** coverage risk from the event stream, **decides** on the right intervention and explains it, and **acts** through a clinical-lead approval step. After acting it closes the loop by updating projected coverage.
 
