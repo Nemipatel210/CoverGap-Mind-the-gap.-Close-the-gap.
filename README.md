@@ -4,9 +4,7 @@ Recognized with a Special Shout-Out at Rutgers Health Hack · Sevaro Challenge �
 
 ## 🎥 Demo & Presentation
 
-[![CoverGap — Project Presentation](https://img.youtube.com/vi/YOUR_VIDEO_ID/maxresdefault.jpg)](https://youtu.be/61StZK6xbIE?is=Y1dR_wv-4osBoJbV)
-
-Watch our presentation of **CoverGap**.
+[![CoverGap — Project Presentation](https://youtu.be/61StZK6xbIE?is=Y1dR_wv-4osBoJbV)
 
 The command center sits on top of Sevaro's existing live view. It **detects** coverage risk from the event stream, **decides** on the right intervention and explains it, and **acts** through a clinical-lead approval step. After acting it closes the loop by updating projected coverage.
 
